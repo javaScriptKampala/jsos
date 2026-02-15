@@ -208,13 +208,11 @@ async function boot() {
       }
     }, 2000);
   }
+  kernel.on('process:spawned', schedulePersist);
   kernel.on('process:killed', schedulePersist);
+  // Best-effort save on unload (async — may not complete)
   window.addEventListener('beforeunload', () => {
-    try {
-      saveSnapshot(vfs.toSnapshot());
-    } catch {
-      // best effort
-    }
+    schedulePersist();
   });
 
   // Done!

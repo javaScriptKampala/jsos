@@ -78,10 +78,9 @@ export const FileManagerApp = {
           row.addEventListener('click', () => {
             try {
               const content = vfs.readFile(fullPath);
-              // eslint-disable-next-line no-alert
-              alert(content);
+              showPreview(fullPath, content);
             } catch (err) {
-              alert(`Cannot read file: ${err.message}`);
+              showPreview(fullPath, `Error: ${err.message}`);
             }
           });
         }
@@ -90,5 +89,22 @@ export const FileManagerApp = {
     }
 
     navigate('/');
+
+    /** Show file content in a preview pane below the file list. */
+    function showPreview(filePath, content) {
+      let preview = container.querySelector('#file-preview');
+      if (!preview) {
+        preview = document.createElement('pre');
+        preview.id = 'file-preview';
+        preview.style.cssText = `
+          margin-top:12px; padding:10px; background:#11111b;
+          border:1px solid #45475a; border-radius:6px;
+          color:#cdd6f4; font-size:12px; white-space:pre-wrap;
+          word-break:break-all; max-height:200px; overflow-y:auto;
+        `;
+        container.appendChild(preview);
+      }
+      preview.textContent = `── ${filePath} ──\n${content}`;
+    }
   },
 };
